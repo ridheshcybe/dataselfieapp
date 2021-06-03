@@ -1,10 +1,21 @@
 {
   "dependencies": {
     "express": "^4.17.1",
-    "fs": "^0.0.1-security",
+    "fs": "^0.0.2",
     "http": "^0.0.1-security",
     "morgan": "^1.10.0",
     "nedb": "^1.8.0",
     "path": "^0.12.7"
-  }
+  },
+  "name": "app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
