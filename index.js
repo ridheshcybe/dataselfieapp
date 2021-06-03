@@ -31,8 +31,8 @@ app.get("/", (req, res) => {
 })
 
 // Show all my submissions
-app.get("/logs", (req, res) => {
-    res.sendFile('/logs/logs.html')
+app.get("/log", (req, res) => {
+    res.sendFile('/log/index.html')
 })
 
 // Show all my submissions
