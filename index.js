@@ -3,26 +3,25 @@ const logger = require('morgan');
 const path = require('path');
 const http = require('http');
 const fs = require('fs');
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3030;
 const Datastore = require('nedb');
 const pathToData = path.resolve(__dirname, "db/db")
-const db = new Datastore({ filename: pathToData });
-const publicPath = path.resolve(__dirname, 'public')
-const app = express()
+const db = new Datastore({ filename: pathToData});
 db.loadDatabase();
 
-function l(msg) {
-    console.log(msg);
-}
+
+const app = express()
+
 
 // add logging middleware
 app.use(logger("dev"))
 
 // Handling JSON data 
-app.use(express.json({ limit: '5mb', extended: true }));
-app.use(express.urlencoded({ limit: '5mb', extended: true }));
+app.use(express.json({limit: '5mb',extended: true}));
+app.use(express.urlencoded({limit: '5mb', extended: true}));
 
 // set the path to the public assets
+const publicPath = path.resolve(__dirname, 'public')
 app.use(express.static(publicPath))
 
 // Show submission page
@@ -31,21 +30,29 @@ app.get("/", (req, res) => {
 })
 
 // Show all my submissions
-app.get("/log", (req, res) => {
-    res.sendFile('/log/index.html')
+app.get("/logs", (req, res) => {
+    res.sendFile('/logs/logs.html')
 })
 
 // Show all my submissions
 // our API
 // GET - /api
-app.get("/api", (req, res) => {
-    db.find({}, function(err, docs) {
-        if (err) {
+app.get("/api", (req, res) => {    
+    db.find({}, function (err, docs) {
+        if(err){
             return err;
-        }
+        } 
         res.json(docs);
     });
 });
+
+app.delete('/all', (req,res)=>{
+  db.remove({ }, { multi: true }, function (err, numRemoved) {
+  db.loadDatabase(function (err) {
+res.end()
+  });
+});
+})
 
 /**  
  * 
@@ -54,35 +61,37 @@ app.get("/api", (req, res) => {
  * and append them to the incoming geocoordinates
  * sent from the client as well as the 
  * selfie from the webcam.
- * */
+ * */ 
 app.post("/api", (req, res) => {
     // our unix timestamp
     const unixTimeCreated = new Date().getTime();
     // add our unix time as a "created" property and add it to our request.body
-    const newData = Object.assign({ "created": unixTimeCreated }, req.body)
+    const newData = Object.assign({"created": unixTimeCreated}, req.body)
 
     // add in our data object to our database using .insert()
-    db.insert(newData, (err, docs) => {
-        if (err) {
+
+    db.insert(newData, (err, docs) =>{
+        if(err){
             return err;
         }
         res.json(docs);
     });
 })
 
+
 /**  
  * 
  * Export all images to PNG on the server
- * */
+ * */ 
 app.get("/export/all", (req, res) => {
-    db.find({}).sort({ 'created': 1 }).exec(function(err, docs) {
-        if (err) {
+    db.find({}).sort({'created':1}).exec(function (err, docs) {
+        if(err){
             return err;
-        }
+        } 
         docs.forEach(item => {
             const outImage = item.image.replace(/^data:image\/png;base64,/, '');
-            fs.writeFileSync(path.resolve(__dirname, `./exports/all/${item.created}.png`), outImage, 'base64');
-            l('writing ', `${item.created}.png`)
+            fs.writeFileSync(path.resolve(__dirname, `./exports/all/${item.created}.png`) , outImage, 'base64');
+            console.log('writing ', `${item.created}.png`)
         })
         res.send('done!')
     });
@@ -91,6 +100,7 @@ app.get("/export/all", (req, res) => {
 
 
 // use the http module to create an http server listening on the specified port
-http.createServer(app).listen(port, () => {
-    l(`see the magic at: http://localhost:${port}`)
+http.createServer(app).listen(port, () =>{
+    console.log(`see the magic at: http://localhost:${port}`)
 })
+

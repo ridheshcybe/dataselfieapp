@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>My Logs</title>
+	<title id="title">Logs</title>
 	<link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"/>
-	<style>
+
+  <style>
 
 		
 		img{
@@ -45,5 +46,10 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 	<script src="sketch.js"></script>
+  	<script>
+    document.onload = () =>{
+      document.getElementsByClassName("f1 yellow b")[0].innerText = "Logs"
+    }
+  </script>
 </body>
 </html>
