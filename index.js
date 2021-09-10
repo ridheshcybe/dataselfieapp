@@ -3,6 +3,7 @@ const logger = require('morgan');
 const path = require('path');
 const http = require('http');
 const fs = require('fs');
+var cors = require('cors')
 const port = process.env.PORT || 3030;
 const Datastore = require('nedb');
 const pathToData = path.resolve(__dirname, "db/db")
@@ -11,7 +12,7 @@ db.loadDatabase();
 
 
 const app = express()
-
+app.use(cors())
 
 // add logging middleware
 app.use(logger("dev"))

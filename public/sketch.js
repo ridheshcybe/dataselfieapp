@@ -16,9 +16,6 @@ function setup(){
 
     submitButton = select("#submitButton");
     submitButton.mousePressed(handleSubmit);
-
-
-    
 }
 
 function handleSubmit(e){
