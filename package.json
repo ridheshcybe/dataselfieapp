@@ -1,10 +1,24 @@
 {
-  "dependencies": {
-    "express": "^4.17.1",
-    "fs": "^0.0.1-security",
-    "http": "^0.0.1-security",
-    "morgan": "^1.10.0",
-    "nedb": "^1.8.0",
-    "path": "^0.12.7"
-  }
+    "name": "geo-cam",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest",
+        "archive": "cp ./src ./archive"
+    },
+    "keywords": [],
+    "author": "cybemachine",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.17.1",
+        "express-rate-limit": "^5.3.0",
+        "morgan": "^1.10.0",
+        "nedb": "^1.8.0",
+        "underscore": "^1.13.1"
+    },
+    "devDependencies": {
+        "jest": "^27.1.1",
+        "supertest": "^6.1.6"
+    }
 }

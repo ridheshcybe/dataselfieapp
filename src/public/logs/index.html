@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Logs</title>
+	<link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"/>
+</head>
+<body class="code lh-copy w-100 h-100 bg-navy pa4">
+	<div class="w-100 tr">
+		<small> <a class="f7 underline hot-pink" href="/">/📷</a></small>
+	</div>
+	<main class="w-100 h-100 flex flex-column">
+		<header class="w-100 tc">
+			<h1 class="f1 yellow b">Logs</h1>
+		</header>
+		<section id="entries" class="w-100 flex flex-row flex-wrap justify-center">
+
+		</section>
+
+	</main>
+	
+	<!-- p5 libraries -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+	<script>
+
+let myData;
+let $entries;
+function preload(){
+    myData = loadJSON('/api');
+}
+
+function setup(){
+    noCanvas();
+    noLoop();
+
+    $entries = select("#entries");
+    // console.log(myData);
+}
+
+function myEntryEl(item){
+    const myImage = `<img src="${item.image}" title="${item._id}">`;
+    const lat =item.location.lat
+    const lon = item.location.lon
+    console.log(item.location.lon)
+    const dateString = moment(item.created).toDate().toString();
+    return`
+        <div class="pa4 bn flex flex-column justify-center items-center ba br2 b--yellow bw2 mw5">
+            <div class="w-100 flex flex-row justify-center items-center">${myImage}</div>
+            <div class="w-100 tc yellow pa2">${dateString}</div>
+            <div class="w-100 tc yellow pa2">${lat}, ${lon}</div>
+        </div>
+    `
+}
+
+function draw(){
+
+    for(p in myData){
+        let item = myData[p];
+        let itemEl = myEntryEl(item);
+        entries.innerHTML += itemEl
+    }
+document.getElementsByClassName("f1 yellow b")[0].innerTEXT = "logs"
+}
+
+
+    </script>
+</body>
+</html>

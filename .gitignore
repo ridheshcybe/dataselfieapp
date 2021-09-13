@@ -1,0 +1,8 @@
+db/
+error/
+vip/
+vip.json
+auth.json
+fixer.js
+fix/
+node_modules/
