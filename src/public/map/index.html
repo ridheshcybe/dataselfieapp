@@ -3,7 +3,6 @@
 <head>
     <title>Map</title>
     <script src="https://unpkg.com/leaflet@1.5.0/dist/leaflet.js">
-
     </script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.0/dist/leaflet.css" />
 
@@ -11,12 +10,12 @@
         body {
             margin: 0;
         }
-
+        
         #map {
             width: 100vw;
             height: 100vh
         }
-
+        
         .mark {
             display: block;
             max-width: 200px;
@@ -82,7 +81,7 @@
 
         function maxmin() {
             var myBounds = new L.LatLngBounds(latlon);
-            
+
             map.fitBounds(myBounds);
         }
 
@@ -105,7 +104,7 @@
 
         function datamanager() {
             getdata().then(data => {
-              
+
                 if (!data) return;
                 data.forEach(e => {
                     if (!e.location) return;

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Data Selfie</title>
-    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css" />
 </head>
+
 <body class="code lh-copy w-100 h-100 bg-navy pa4">
     <div class="w-100 tr">
         <small> <a class="f7 underline hot-pink" href="./logs">/logs</a></small>
@@ -18,8 +20,8 @@
         <button id="submitButton" class="mt4 f3 w5 h3 bn shadow-1 grow bg-yellow hot-pink br2">🚀</button>
     </main>
     <p class="w-100 h-100 flex flex-column justify-center items-center yellow">
-      &copy; ridhesh & cybemahcine
-  </p>
+        &copy; ridhesh & cybemahcine
+    </p>
     <!-- p5 libraries -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
@@ -27,66 +29,67 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/p5.geolocation@1.0.1/p5.geolocation.min.js"></script>
     <script>
         // console.log("hello from index")
-let capture;
-let submitButton;
-let locationData;
+        let capture;
+        let submitButton;
+        let locationData;
 
 
-function setup(){
-    createCanvas(200, 200).parent("#mySketch");
-    capture = createCapture(VIDEO);
-    capture.hide()
-    capture.size(width, height);
-    imageMode(CENTER);
-    getCurrentPosition(doThisOnLocation)
+        function setup() {
+            createCanvas(200, 200).parent("#mySketch");
+            capture = createCapture(VIDEO);
+            capture.hide()
+            capture.size(width, height);
+            imageMode(CENTER);
+            getCurrentPosition(doThisOnLocation)
 
-    pixelDensity(0.5);
+            pixelDensity(0.5);
 
-    submitButton = select("#submitButton");
-    submitButton.mousePressed(handleSubmit);
-}
-
-function handleSubmit(e){
-    let output = {
-        image: '',
-        location:{
-        lat: undefined,
-        lon: undefined
+            submitButton = select("#submitButton");
+            submitButton.mousePressed(handleSubmit);
         }
-    }
-    
-    output.location.lat = locationData.latitude
-    output.location.lon = locationData.longitude
-    
-    const last_img = get()
-    output.image = last_img.canvas.toDataURL()
 
-    const options = {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-            // "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: JSON.stringify(output)
-    }
-    fetch(`/api`, options).then(result => {
-        // updateMyDots()
-        console.log('success')
-    });
-}
+        function handleSubmit(e) {
+            let output = {
+                image: '',
+                location: {
+                    lat: undefined,
+                    lon: undefined
+                }
+            }
 
-function doThisOnLocation(position){
-    locationData = position
-    console.log(position.latitude)
-    console.log(position.longitude)
-    select("#lat").html( nfc(position.latitude, 4) )
-    select("#lon").html( nfc(position.longitude, 4))
-}
+            output.location.lat = locationData.latitude
+            output.location.lon = locationData.longitude
 
-function draw(){
-    background(220);
-    image(capture,width/2,height/2, width*1.3, height)
-}
+            const last_img = get()
+            output.image = last_img.canvas.toDataURL()
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    // "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: JSON.stringify(output)
+            }
+            fetch(`/api`, options).then(result => {
+                // updateMyDots()
+                console.log('success')
+            });
+        }
+
+        function doThisOnLocation(position) {
+            locationData = position
+            console.log(position.latitude)
+            console.log(position.longitude)
+            select("#lat").html(nfc(position.latitude, 4))
+            select("#lon").html(nfc(position.longitude, 4))
+        }
+
+        function draw() {
+            background(220);
+            image(capture, width / 2, height / 2, width * 1.3, height)
+        }
     </script>
 </body>
+
 </html>

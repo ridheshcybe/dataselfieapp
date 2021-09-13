@@ -3,7 +3,6 @@
 <head>
     <title>Map</title>
     <script src="https://unpkg.com/leaflet@1.5.0/dist/leaflet.js">
-
     </script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.0/dist/leaflet.css" />
 
@@ -11,12 +10,12 @@
         body {
             margin: 0;
         }
-
+        
         #map {
             width: 100vw;
             height: 100vh
         }
-
+        
         .mark {
             display: block;
             max-width: 200px;
@@ -82,21 +81,21 @@
 
         function maxmin() {
             var myBounds = new L.LatLngBounds(latlon);
-            
+
             map.fitBounds(myBounds);
         }
 
 
         function closephaze() {
             dumpdata.forEach(e => {
-                if (e.location.lat == 0 && e.location.lon == 0) return;
-                if (e.comment) {
-                    addmarker(e.location.lat, e.location.lon, e.image, e.comment)
-                } else {
-                    addmarkernocom(e.location.lat, e.location.lon, e.image)
-                }
-            })
-            ///maxmin();
+                    if (e.location.lat == 0 && e.location.lon == 0) return;
+                    if (e.comment) {
+                        addmarker(e.location.lat, e.location.lon, e.image, e.comment)
+                    } else {
+                        addmarkernocom(e.location.lat, e.location.lon, e.image)
+                    }
+                })
+                ///maxmin();
             for (var i = 0; i > markers.length; i++) {
                 var marker = markers[i]
                 marker.openPopup();
@@ -105,7 +104,7 @@
 
         function datamanager() {
             getdata().then(data => {
-              console.log(data)
+                console.log(data)
                 if (!data) return;
                 data.forEach(e => {
                     if (!e.location) return;
@@ -132,7 +131,7 @@
             });
             map.addLayer(osm);
 
-map.setView([0, 0], 0);
+            map.setView([0, 0], 0);
 
             datamanager();
         }
