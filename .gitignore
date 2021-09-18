@@ -1,8 +1,12 @@
 db/
 error/
 vip/
-vip.json
-auth.json
-fixer.js
 fix/
 node_modules/
+*.db
+*.lock
+fixer.js
+yarn.lock
+package-lock.json
+vip.json
+auth.json

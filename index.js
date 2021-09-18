@@ -1,1 +1,3 @@
-require("http").createServer(require("./src/server.js")).listen(2e3);
+require("http").createServer(
+    require("./server.js")
+).listen(3e3);
