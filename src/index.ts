@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/map", (req, res) => {
-  res.sendFile(path.resolve(views, "./map/map.html"));
+  res.sendFile(path.resolve(views, "./map/index.html"));
 });
 
 app.get("/logs", (req, res) => {

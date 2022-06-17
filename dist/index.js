@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
     res.sendFile(path_1.default.resolve(views, "index.html"));
 });
 app.get("/map", (req, res) => {
-    res.sendFile(path_1.default.resolve(views, "./map/map.html"));
+    res.sendFile(path_1.default.resolve(views, "./map/index.html"));
 });
 app.get("/logs", (req, res) => {
     res.sendFile(path_1.default.resolve(views, "./logs/index.html"));
