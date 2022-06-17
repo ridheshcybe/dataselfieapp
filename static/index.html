@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Data Selfie</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            text-size-adjust: 100%;
+        }
+        
+        main {
+            display: grid;
+            justify-items: center;
+            align-items: center;
+        }
+        
+        #watermark {
+            position: fixed;
+            bottom: 1%;
+            right: 1%;
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css" />
+</head>
+
+<body class="code lh-copy bg-navy pa4">
+    <div class="w-100 tr"> <a class="f7 underline hot-pink" href="./logs">/logs</a>&nbsp;<a class="f7 underline hot-pink" href="./map">/map</a></div>
+    <main class="">
+        <header class="w-100 f-headline lh-solid yellow tc">
+            <h1 class="f2">Here I am at</h1>
+            <h2 class="f3"><span class="underline" id="lat"></span>, <span class="underline" id="lon"></span></h2>
+        </header>
+        <div class="pa2 ba bw2 shadow-1 br2 b--yellow" id="mySketch"></div>
+        <button aria-hidden="true" id="submitButton" class="mt4 f3 w5 h3 bn shadow-1 grow bg-yellow hot-pink br2">
+            <img width="25%" height="100%" src="https://i.ibb.co/yWpczLc/imgbb.png" >
+        </button>
+    </main>
+
+    <div id="watermark" class="yellow">&copy; ridhesh & cybemahcine</div>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js" defer></script>
+    <script>
+        let capture;
+        let submitButton;
+        let locationData;
+
+        function setup() {
+            createCanvas(250, 390).parent("#mySketch");
+            capture = createCapture(VIDEO);
+            capture.hide();
+            console.log({
+                width,
+                height
+            })
+            capture.size(width, height);
+            imageMode(CENTER);
+            navigator.geolocation.getCurrentPosition(doThisOnLocation, (pos) => {
+                console.error(pos)
+            });
+            pixelDensity(0.5);
+            submitButton = select("#submitButton");
+            submitButton.mousePressed(handleSubmit);
+        }
+
+        function handleSubmit(e) {
+            let output = {
+                image: '',
+                location: {
+                    lat: undefined,
+                    lon: undefined
+                }
+            }
+            const last_img = get();
+
+            output = {
+                image: last_img.canvas.toDataURL(),
+                location: {
+                    lat: locationData.latitude,
+                    lon: locationData.longitude
+                }
+            }
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(output)
+            }
+            fetch(`http://dataselfieapp.glitch.me/api`, options).then(result => {
+                console.log('success')
+            });
+        }
+
+        function doThisOnLocation(position) {
+            locationData = position.coords;
+            select("#lat").html(nfc(position.coords.latitude, 4));
+            select("#lon").html(nfc(position.coords.longitude, 4))
+        }
+
+        function draw() {
+            background('#001b44');
+            image(capture, width / 2, height / 2, width * 2, height)
+        }
+    </script>
+</body>
+
+</html>
