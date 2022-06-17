@@ -1,0 +1,142 @@
+<html>
+
+<head>
+    <title>Map</title>
+    <script src="https://unpkg.com/leaflet@1.5.0/dist/leaflet.js">
+
+    </script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.0/dist/leaflet.css" />
+
+    <style>
+        body {
+            margin: 0;
+        }
+
+        #map {
+            width: 100vw;
+            height: 100vh
+        }
+
+        .mark {
+            display: block;
+            max-width: 200px;
+            max-height: 200px;
+            width: auto;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+        var map;
+        var ajaxRequest;
+        var plotlist;
+        var dumpdata;
+        var plotlayers = [];
+        var markers = [];
+        var latlon = [];
+        var remove = [];
+
+
+        async function getdata() {
+            var e = await fetch('/api')
+            var data = await e.json()
+            return data;
+        }
+
+        function addmarkernocom(lat, lon, url) {
+            var marker = L.marker([lat, lon]).addTo(map);
+            var popup = L.popup()
+                .setContent(`<img src=${url} class="mark">`);
+            marker.bindPopup(popup)
+            markers.push(marker);
+        }
+
+        function addmarker(lat, lon, url, comment) {
+            var marker = L.marker([lat, lon]).addTo(map);
+            var popup = L.popup()
+                .setContent(`<img src=${url} class="mark"><p title="(only for vip users)">Comment => ${comment}`);
+            marker.bindPopup(popup)
+            markers.push(marker);
+        }
+
+
+        function getDistance(val) {
+            var origin = val[0];
+            var destination = val[1];
+            var lat1 = origin[0];
+            var lat2 = destination[0]
+            var lon1 = origin[1];
+            var lon2 = destination[1]
+            var p = 0.017453292519943295; // Math.PI / 180
+            var c = Math.cos;
+            var a = 0.5 - c((lat2 - lat1) * p) / 2 +
+                c(lat1 * p) * c(lat2 * p) *
+                (1 - c((lon2 - lon1) * p)) / 2;
+
+            return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+        }
+
+
+        function maxmin() {
+            var myBounds = new L.LatLngBounds(latlon);
+            
+            map.fitBounds(myBounds);
+        }
+
+
+        function closephaze() {
+            dumpdata.forEach(e => {
+                if (e.location.lat == 0 && e.location.lon == 0) return;
+                if (e.comment) {
+                    addmarker(e.location.lat, e.location.lon, e.image, e.comment)
+                } else {
+                    addmarkernocom(e.location.lat, e.location.lon, e.image)
+                }
+            })
+            maxmin();
+            for (var i = 0; i > markers.length; i++) {
+                var marker = markers[i]
+                marker.openPopup();
+            }
+        }
+
+        function datamanager() {
+            getdata().then(data => {
+              
+                if (!data) return;
+                data.forEach(e => {
+                    if (!e.location) return;
+                    if (e.location.lat === undefined || e.location.lon === null) return;
+                    if (e.location.lat == 0 && e.location.lon == 0) return;
+
+                    latlon.push([Number(e.location.lat), Number(e.location.lon)])
+                })
+                dumpdata = data;
+                closephaze();
+            })
+        }
+
+        // Init Open Street Maps
+        function initmap() {
+            // set up the map
+            map = new L.Map('map');
+            var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            var osmAttrib = 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors<br>Made by &copy; cybemachine';
+            var osm = new L.TileLayer(osmUrl, {
+                minZoom: 2,
+                maxZoom: 19,
+                attribution: osmAttrib
+            });
+            map.addLayer(osm);
+
+            datamanager();
+        }
+
+        initmap();
+    </script>
+</body>
+
+</html>

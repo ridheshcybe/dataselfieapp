@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Map</title>
+    <script src="https://unpkg.com/leaflet@1.5.0/dist/leaflet.js">
+    </script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.0/dist/leaflet.css" />
+
+    <style>
+        body {
+            margin: 0;
+        }
+        
+        #map {
+            width: 100vw;
+            height: 100vh
+        }
+        
+        .mark {
+            display: block;
+            max-width: 200px;
+            max-height: 200px;
+            width: auto;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+        window.map = {};
+        var markers = [];
+        var circles = []
+        var alive = true;
+        var once = true;
+
+        function addmarker(lat, lon, url, comment) {
+            var popup;
+            var marker = L.marker([lat, lon]).addTo(map);
+            if (!comment) {
+                popup = L.popup()
+                    .setContent(`<a href=${url} target="_blank"> <img  src=${url} class="mark"></a>`);
+                marker.bindPopup(popup)
+                markers.push(marker);
+                return;
+            }
+            popup = L.popup()
+                .setContent(`<a href=${url} target="_blank"><img  src=${url} class="mark"></a><p title="(only for vip users)">Comment => ${comment}></p>`);
+            marker.bindPopup(popup)
+            markers.push(marker);
+        }
+
+        function addCircle(lat, lon) {
+            var circle = L.circle([lat, lon], {
+                radius: 100
+            })
+            circle.addTo(window.map);
+            circles.push(circle)
+        }
+
+        function lastphaze() {
+            var legend = L.control({
+                position: 'topright'
+            });
+            legend.onAdd = function(map) {
+                var div = L.DomUtil.create('div', 'info legend');
+                div.innerHTML = `<select value="offset range" id="selectt">
+                    <option selected="selected">offset range</option>
+                    <option>network area</option>
+                    </select>`;
+                div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
+                return div;
+            };
+            legend.addTo(map);
+        }
+
+        async function initmap() {
+            window.map = new L.Map('map');
+            var osmUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png';
+            var osmAttrib = '&copy;OpenStreetMap, &copy;CartoDB <br>Made by &copy; cybemachine';
+            var osm = new L.TileLayer(osmUrl, {
+                minZoom: 2,
+                maxZoom: 19,
+                attribution: osmAttrib
+            });
+            window.map.addLayer(osm);
+            window.map.setView([0, 0], 0);
+
+            var e = await fetch('/api')
+            var data = await e.json()
+            if (!data) return;
+            data.forEach(e => {
+                if (!e.location) return;
+                if (!e.location.lat || !e.location.lon) return;
+                addmarker(e.location.lat, e.location.lon, e.image, e.comment)
+                addCircle(e.location.lat, e.location.lon)
+            });
+        }
+
+        (async() => {
+            await initmap();
+            await lastphaze();
+        })()
+    </script>
+</body>
+
+</html>
