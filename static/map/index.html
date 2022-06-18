@@ -88,7 +88,7 @@
             window.map.addLayer(osm);
             window.map.setView([0, 0], 0);
 
-            var e = await fetch('http://dataselfieapp.glitch.me/api')
+            var e = await fetch('https://dataselfieapp.cybemachine.repl.co/api')
             var data = await e.json()
             if (!data) return;
             data.forEach(e => {
