@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "keywords": [],
-    "author": "cybemachine",
+    "author": "ridhesh w",
     "license": "ISC",
     "dependencies": {
         "@seald-io/nedb": "^3.0.0",
